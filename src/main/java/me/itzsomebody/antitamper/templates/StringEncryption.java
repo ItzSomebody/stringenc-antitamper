@@ -33,7 +33,7 @@ public class StringEncryption {
                     decrypted[i] = (char) (encrypted[i] ^ magicKey3 ^ magicKey1);
                     break;
                 case 3:
-                    decrypted[i] = (char) (encrypted[i] - magicKey2 ^ magicKey1);
+                    decrypted[i] = (char) (encrypted[i] ^ magicKey1);
                     break;
                 case 4:
                     decrypted[i] = (char) ((encrypted[i] >> 2) ^ magicKey1);

@@ -228,8 +228,6 @@ public class DecryptorClass implements Opcodes {
             mv.visitVarInsn(ALOAD, 7);
             mv.visitVarInsn(ILOAD, 9);
             mv.visitInsn(CALOAD);
-            mv.visitVarInsn(ILOAD, 3);
-            mv.visitInsn(ISUB);
             mv.visitVarInsn(ILOAD, 2);
             mv.visitInsn(IXOR);
             mv.visitInsn(I2C);

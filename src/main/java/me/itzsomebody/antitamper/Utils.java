@@ -24,7 +24,7 @@ public class Utils {
                     encrypted[i] = (char) (cpSize ^ key2 ^ chars[i]);
                     break;
                 case 3:
-                    encrypted[i] = (char) (cpSize ^ key1 + chars[i]);
+                    encrypted[i] = (char) (cpSize ^ chars[i]);
                     break;
                 case 4:
                     encrypted[i] = (char) ((chars[i] ^ cpSize) << 2);
