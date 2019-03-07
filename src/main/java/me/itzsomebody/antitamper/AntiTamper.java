@@ -1,5 +1,7 @@
 package me.itzsomebody.antitamper;
 
+import java.io.IOException;
+import java.util.stream.Stream;
 import org.apache.commons.io.IOUtils;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -15,6 +17,7 @@ import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
+import org.objectweb.asm.tree.MethodNode;
 
 public class AntiTamper {
     public static void main(String[] args) {
@@ -24,8 +27,7 @@ public class AntiTamper {
         if (args != null) {
             if (args.length == 1) {
                 input = new File(args[0]);
-                output = new File(args[0]
-                        .replace(".jar", "") + "-enc.jar");
+                output = new File(args[0].replace(".jar", "") + "-enc.jar");
             } else if (args.length == 2) {
                 input = new File(args[0]);
                 output = new File(args[1]);
@@ -39,8 +41,7 @@ public class AntiTamper {
         }
 
         if (!input.exists()) {
-            System.out.println("The input jar: " + input.getAbsolutePath() +
-                    " does not exist");
+            System.out.println("The input jar: " + input.getAbsolutePath() + " does not exist");
             return;
         }
 
@@ -85,37 +86,48 @@ public class AntiTamper {
         String decryptClassName = Utils.randomClassName(classNames);
         String decryptMethodName = Utils.randomString();
 
-        byte[] decryptionBytes = new DecryptorClass(decryptClassName,
-                Utils.randomString(), Utils.randomString(), decryptMethodName).getBytes();
-
-        int cpSize = new ClassReader(decryptionBytes).getItemCount();
-
         classes.values().forEach(classNode -> {
-            classNode.methods.stream().filter(methodNode -> (methodNode.access & Opcodes.ACC_ABSTRACT) == 0)
-                    .forEach(methodNode -> {
-                        for (AbstractInsnNode insn : methodNode.instructions.toArray()) {
-                            if (insn instanceof LdcInsnNode
-                                    && ((LdcInsnNode) insn).cst instanceof String) {
-                                methodNode.instructions.insert(insn, new MethodInsnNode(Opcodes.INVOKESTATIC,
-                                        decryptClassName, decryptMethodName,
-                                        "(Ljava/lang/Object;)Ljava/lang/String;", false));
-                                ((LdcInsnNode) insn).cst = Utils.encrypt(((LdcInsnNode) insn).cst.toString(),
-                                        decryptClassName.replace("/", "."), decryptMethodName, cpSize);
-                            }
-                        }
-                    });
+            Set<MethodNode> toProcess = new HashSet<>();
+
+            classNode.methods.stream().filter(Utils::hasInstructions).forEach(methodNode -> {
+                for (AbstractInsnNode insn : methodNode.instructions.toArray()) {
+                    if (insn instanceof LdcInsnNode && ((LdcInsnNode) insn).cst instanceof String) {
+                        methodNode.instructions.insert(insn, new MethodInsnNode(Opcodes.INVOKESTATIC,
+                                decryptClassName, decryptMethodName, "(Ljava/lang/Object;)Ljava/lang/String;", false));
+                        toProcess.add(methodNode);
+                    }
+                }
+            });
+
+            ClassWriter cw = new ClassWriter(0);
+            classNode.accept(cw);
+            ClassReader cr = new ClassReader(cw.toByteArray());
+
+            toProcess.forEach(methodNode -> Stream.of(methodNode.instructions.toArray()).filter(Utils::isString).forEach(insn -> {
+                LdcInsnNode ldc = (LdcInsnNode) insn;
+                ldc.cst = Utils.encrypt((String) ldc.cst, classNode.name.replace("/", "."), methodNode.name, cr.getItemCount() + 20);
+            }));
         });
 
-        for (ClassNode cn : classes.values()) {
-            ClassWriter cw = new ClassWriter(0);
-            cn.accept(cw);
+        classes.values().forEach(classNode -> {
+            try {
+                ClassWriter cw = new ClassWriter(0);
+                classNode.accept(cw);
+                for (int i = 0; i < 20; i++)
+                    cw.newUTF8(Utils.randomString());
 
-            ZipEntry newEntry = new ZipEntry(cn.name + ".class");
-            newEntry.setTime(current);
+                ZipEntry newEntry = new ZipEntry(classNode.name + ".class");
+                newEntry.setTime(current);
 
-            zos.putNextEntry(newEntry);
-            zos.write(cw.toByteArray());
-        }
+                zos.putNextEntry(newEntry);
+                zos.write(cw.toByteArray());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+        byte[] decryptionBytes = new DecryptorClass(decryptClassName, Utils.randomString(), Utils.randomString(),
+                decryptMethodName).getBytes();
 
         ZipEntry newEntry = new ZipEntry(decryptClassName + ".class");
         newEntry.setTime(current);

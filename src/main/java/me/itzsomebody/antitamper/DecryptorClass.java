@@ -20,7 +20,7 @@ public class DecryptorClass implements Opcodes {
         FieldVisitor fv;
         MethodVisitor mv;
 
-        cw.visit(V1_5, ACC_PUBLIC + ACC_SUPER, className, Utils.randomString(), "java/lang/Object", null);
+        cw.visit(52, ACC_PUBLIC + ACC_SUPER, className, null, "java/lang/Object", null);
 
         {
             fv = cw.visitField(ACC_PRIVATE + ACC_STATIC, fieldName, "[I", null, null);
@@ -29,39 +29,6 @@ public class DecryptorClass implements Opcodes {
         {
             fv = cw.visitField(ACC_PRIVATE + ACC_STATIC, fieldName2, "I", null, null);
             fv.visitEnd();
-        }
-        {
-            mv = cw.visitMethod(ACC_STATIC, "<clinit>", "()V", null, null);
-            mv.visitCode();
-            Label l0 = new Label();
-            mv.visitLabel(l0);
-            mv.visitInsn(ICONST_1);
-            mv.visitIntInsn(NEWARRAY, T_INT);
-            mv.visitFieldInsn(PUTSTATIC, className, fieldName, "[I");
-            Label l1 = new Label();
-            mv.visitLabel(l1);
-            mv.visitLdcInsn("28304");
-            mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/String", "hashCode", "()I", false);
-            mv.visitInsn(ICONST_1);
-            mv.visitInsn(IAND);
-            mv.visitVarInsn(ISTORE, 0);
-            Label l2 = new Label();
-            mv.visitLabel(l2);
-            mv.visitFieldInsn(GETSTATIC, className, fieldName, "[I");
-            mv.visitVarInsn(ILOAD, 0);
-            mv.visitInsn(ICONST_1);
-            mv.visitInsn(ISUB);
-            mv.visitVarInsn(ILOAD, 0);
-            mv.visitInsn(IASTORE);
-            Label l3 = new Label();
-            mv.visitLabel(l3);
-            mv.visitVarInsn(ILOAD, 0);
-            mv.visitFieldInsn(PUTSTATIC, className, fieldName2, "I");
-            Label l4 = new Label();
-            mv.visitLabel(l4);
-            mv.visitInsn(RETURN);
-            mv.visitMaxs(3, 1);
-            mv.visitEnd();
         }
         {
             mv = cw.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
@@ -158,6 +125,7 @@ public class DecryptorClass implements Opcodes {
             mv.visitVarInsn(ISTORE, 9);
             Label l9 = new Label();
             mv.visitLabel(l9);
+            mv.visitFrame(Opcodes.F_FULL, 10, new Object[]{"java/lang/Object", "[Ljava/lang/StackTraceElement;", Opcodes.INTEGER, Opcodes.INTEGER, Opcodes.INTEGER, "java/lang/String", "[C", "[C", Opcodes.INTEGER, Opcodes.INTEGER}, 0, new Object[]{});
             mv.visitVarInsn(ILOAD, 9);
             mv.visitVarInsn(ILOAD, 8);
             Label l10 = new Label();
@@ -167,32 +135,16 @@ public class DecryptorClass implements Opcodes {
             Label l12 = new Label();
             mv.visitJumpInsn(GOTO, l12);
             mv.visitLabel(l10);
+            mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
             mv.visitVarInsn(ILOAD, 9);
-            mv.visitInsn(ICONST_5);
+            mv.visitInsn(ICONST_2);
             mv.visitInsn(IREM);
             Label l13 = new Label();
             Label l14 = new Label();
             Label l15 = new Label();
-            Label l16 = new Label();
-            Label l17 = new Label();
-            Label l18 = new Label();
-            mv.visitTableSwitchInsn(0, 4, l18, new Label[]{l13, l14, l15, l16, l17});
+            mv.visitLookupSwitchInsn(l15, new int[]{0, 1}, new Label[]{l13, l14});
             mv.visitLabel(l13);
-            mv.visitVarInsn(ALOAD, 6);
-            mv.visitVarInsn(ILOAD, 9);
-            mv.visitVarInsn(ALOAD, 7);
-            mv.visitVarInsn(ILOAD, 9);
-            mv.visitInsn(CALOAD);
-            mv.visitInsn(ICONST_4);
-            mv.visitInsn(ISHR);
-            mv.visitVarInsn(ILOAD, 2);
-            mv.visitInsn(IXOR);
-            mv.visitInsn(I2C);
-            mv.visitInsn(CASTORE);
-            Label l19 = new Label();
-            mv.visitLabel(l19);
-            mv.visitJumpInsn(GOTO, l18);
-            mv.visitLabel(l14);
+            mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
             mv.visitVarInsn(ALOAD, 6);
             mv.visitVarInsn(ILOAD, 9);
             mv.visitVarInsn(ALOAD, 7);
@@ -204,10 +156,11 @@ public class DecryptorClass implements Opcodes {
             mv.visitInsn(IXOR);
             mv.visitInsn(I2C);
             mv.visitInsn(CASTORE);
-            Label l20 = new Label();
-            mv.visitLabel(l20);
-            mv.visitJumpInsn(GOTO, l18);
-            mv.visitLabel(l15);
+            Label l16 = new Label();
+            mv.visitLabel(l16);
+            mv.visitJumpInsn(GOTO, l15);
+            mv.visitLabel(l14);
+            mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
             mv.visitVarInsn(ALOAD, 6);
             mv.visitVarInsn(ILOAD, 9);
             mv.visitVarInsn(ALOAD, 7);
@@ -219,54 +172,47 @@ public class DecryptorClass implements Opcodes {
             mv.visitInsn(IXOR);
             mv.visitInsn(I2C);
             mv.visitInsn(CASTORE);
-            Label l21 = new Label();
-            mv.visitLabel(l21);
-            mv.visitJumpInsn(GOTO, l18);
-            mv.visitLabel(l16);
-            mv.visitVarInsn(ALOAD, 6);
-            mv.visitVarInsn(ILOAD, 9);
-            mv.visitVarInsn(ALOAD, 7);
-            mv.visitVarInsn(ILOAD, 9);
-            mv.visitInsn(CALOAD);
-            mv.visitVarInsn(ILOAD, 2);
-            mv.visitInsn(IXOR);
-            mv.visitInsn(I2C);
-            mv.visitInsn(CASTORE);
-            Label l22 = new Label();
-            mv.visitLabel(l22);
-            mv.visitJumpInsn(GOTO, l18);
-            mv.visitLabel(l17);
-            mv.visitVarInsn(ALOAD, 6);
-            mv.visitVarInsn(ILOAD, 9);
-            mv.visitVarInsn(ALOAD, 7);
-            mv.visitVarInsn(ILOAD, 9);
-            mv.visitInsn(CALOAD);
-            mv.visitInsn(ICONST_2);
-            mv.visitInsn(ISHR);
-            mv.visitVarInsn(ILOAD, 2);
-            mv.visitInsn(IXOR);
-            mv.visitInsn(I2C);
-            mv.visitInsn(CASTORE);
-            mv.visitLabel(l18);
+            mv.visitLabel(l15);
+            mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
             mv.visitIincInsn(9, 1);
-            Label l23 = new Label();
-            mv.visitLabel(l23);
             mv.visitJumpInsn(GOTO, l9);
             mv.visitLabel(l12);
+            mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
             mv.visitTypeInsn(NEW, "java/lang/String");
             mv.visitInsn(DUP);
             mv.visitVarInsn(ALOAD, 6);
             mv.visitMethodInsn(INVOKESPECIAL, "java/lang/String", "<init>", "([C)V", false);
             mv.visitInsn(ARETURN);
-            Label l24 = new Label();
-            mv.visitLabel(l24);
+            Label l17 = new Label();
+            mv.visitLabel(l17);
             mv.visitMaxs(5, 10);
             mv.visitEnd();
         }
-        cw.visitEnd();
-        for (int i = 0; i < 50; i++) {
-            cw.newUTF8(Utils.randomString());
+        {
+            mv = cw.visitMethod(ACC_STATIC, "<clinit>", "()V", null, null);
+            mv.visitCode();
+            Label l0 = new Label();
+            mv.visitLabel(l0);
+            mv.visitInsn(ICONST_1);
+            mv.visitIntInsn(NEWARRAY, T_INT);
+            mv.visitFieldInsn(PUTSTATIC, className, fieldName, "[I");
+            Label l1 = new Label();
+            mv.visitLabel(l1);
+            mv.visitInsn(ICONST_1);
+            mv.visitVarInsn(ISTORE, 0);
+            mv.visitVarInsn(ILOAD, 0);
+            mv.visitFieldInsn(PUTSTATIC, className, fieldName2, "I");
+            mv.visitFieldInsn(GETSTATIC, className, fieldName, "[I");
+            mv.visitInsn(ICONST_0);
+            mv.visitInsn(ICONST_2);
+            mv.visitInsn(IASTORE);
+            Label l2 = new Label();
+            mv.visitLabel(l2);
+            mv.visitInsn(RETURN);
+            mv.visitMaxs(3, 1);
+            mv.visitEnd();
         }
+        cw.visitEnd();
 
         return cw.toByteArray();
     }

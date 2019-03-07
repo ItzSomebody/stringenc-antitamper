@@ -22,21 +22,12 @@ public class StringEncryption {
                 break;
             }
 
-            switch (i % 5) {
+            switch (i % 2) {
                 case 0:
-                    decrypted[i] = (char) ((encrypted[i] >> 4) ^ magicKey1);
-                    break;
-                case 1:
                     decrypted[i] = (char) (encrypted[i] ^ magicKey2 ^ magicKey1);
                     break;
-                case 2:
+                case 1:
                     decrypted[i] = (char) (encrypted[i] ^ magicKey3 ^ magicKey1);
-                    break;
-                case 3:
-                    decrypted[i] = (char) (encrypted[i] ^ magicKey1);
-                    break;
-                case 4:
-                    decrypted[i] = (char) ((encrypted[i] >> 2) ^ magicKey1);
                     break;
             }
 
@@ -47,8 +38,7 @@ public class StringEncryption {
     }
 
     static {
-        int one = "28304".hashCode() & 1;
-        indexGrab[one - 1] = one;
-        StringEncryption.one = one;
+        StringEncryption.one = 1;
+        indexGrab[0] = 2;
     }
 }
